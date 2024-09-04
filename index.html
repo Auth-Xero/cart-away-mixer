@@ -75,7 +75,11 @@
     <script>
         let bleDevice;
         let bleCharacteristic;
-        const debug = false; // Toggle this to false to hide debug fields
+
+        // Check if the 'debug' parameter is present in the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const debug = urlParams.has('debug');
+        
         const serviceUuid = '0807b6d4-f731-4347-b01d-ceceeef92960';
         const characteristicUuid = 'ea8d5bbf-379b-4a6c-91ce-51e6f7f27266';
 
@@ -86,9 +90,8 @@
             document.getElementById('debug-fields').classList.add('hidden');
         }
 
-        document.getElementById('start').addEventListener('click', async () => {
+        async function connectToDevice() {
             if (!bleCharacteristic) {
-                // Automatically connect if not already connected
                 try {
                     console.log('Requesting BLE device...');
                     bleDevice = await navigator.bluetooth.requestDevice({
@@ -108,8 +111,16 @@
                     alert('Connected to BLE device');
                 } catch (error) {
                     alert('Error: ' + error);
-                    return;
+                    return false;
                 }
+            }
+            return true;
+        }
+
+        document.getElementById('start').addEventListener('click', async () => {
+            if (!bleCharacteristic) {
+                const connected = await connectToDevice();
+                if (!connected) return;
             }
 
             // Default values for "Start Mixing"
@@ -130,13 +141,13 @@
 
         document.getElementById('stop').addEventListener('click', async () => {
             if (!bleCharacteristic) {
-                alert('Not connected to a Cement Mixer');
-                return;
+                const connected = await connectToDevice();
+                if (!connected) return;
             }
 
-            const motorEnable = 0;
-            const motorDir = 0;
-            const ledOn = 1;
+            const motorEnable = 0; // Disable motor
+            const motorDir = 0; // Default direction
+            const ledOn = 1; // LED ON (default when stopping)
             const motorSteps = 256; // Default steps value when stopping
 
             const dataString = `${motorEnable};${motorDir};${ledOn};${motorSteps}`;
@@ -151,7 +162,7 @@
 
         document.getElementById('send').addEventListener('click', async () => {
             if (!bleCharacteristic) {
-                alert('Not connected to a BLE device');
+                alert('Not connected to a Cement Mixer device. Please connect first.');
                 return;
             }
 
