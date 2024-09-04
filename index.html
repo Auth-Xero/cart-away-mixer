@@ -81,6 +81,7 @@ function redirectIfNotChrome() {
     const isIOS = /iphone|ipad|ipod/.test(userAgent);
 
     if (!isChrome) {
+alert("You're not using Chrome. You'll be redirected to the appropriate store to download it.");
         if (isIOS) {
             // Redirect to the App Store
             window.location.href = "https://apps.apple.com/us/app/google-chrome/id535886823";
