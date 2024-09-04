@@ -73,6 +73,30 @@
     </div>
 
     <script>
+function redirectIfNotChrome() {
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    const isChrome = userAgent.includes("chrome") && !userAgent.includes("edg");
+    const isAndroid = userAgent.includes("android");
+    const isIOS = /iphone|ipad|ipod/.test(userAgent);
+
+    if (!isChrome) {
+        if (isIOS) {
+            // Redirect to the App Store
+            window.location.href = "https://apps.apple.com/us/app/google-chrome/id535886823";
+        } else if (isAndroid) {
+            // Redirect to the Google Play Store
+            window.location.href = "https://play.google.com/store/apps/details?id=com.android.chrome";
+        } else {
+            // Redirect to the Chrome download page for other platforms
+            window.location.href = "https://www.google.com/chrome/";
+        }
+    }
+}
+
+// Call the function
+redirectIfNotChrome();
+
         let bleDevice;
         let bleCharacteristic;
 
