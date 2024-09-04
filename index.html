@@ -162,8 +162,8 @@
 
         document.getElementById('send').addEventListener('click', async () => {
             if (!bleCharacteristic) {
-                alert('Not connected to a Cement Mixer device. Please connect first.');
-                return;
+                                const connected = await connectToDevice();
+                if (!connected) return;
             }
 
             const motorEnable = parseInt(document.getElementById('motorEnable').value);
